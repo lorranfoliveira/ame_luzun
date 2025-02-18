@@ -1,15 +1,23 @@
+include("structure.jl")
+
+
+using IterativeSolvers
+
 struct Solver
-    iterative::Bool
     structure::Structure
+    iterative::Bool
 end
 
-function calculate_displacements()
+function calculate_displacements(solver::Solver)
     f = free_forces(solver.structure)
-    k = k(solver.structure)
+    k = global_stiffness(solver.structure)
 
+    u = zeros(length(f))
     if solver.iterative
-        return cg(k, f)
+        u = cg(k, f)
     else
-        return k \ f
+        u = k \ f
     end
+
+    return u
 end

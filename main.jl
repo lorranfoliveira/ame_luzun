@@ -1,4 +1,4 @@
-include("src/structure.jl")
+include("src/solver.jl")
 
 area = 0.0014
 young = 100e6
@@ -25,5 +25,6 @@ elements = [
 ]
 
 structure = Structure(1, nodes, elements)
+solver = Solver(structure, false)
+println(calculate_displacements(solver))
 
-println(collect(global_stiffness(structure)))
