@@ -3,13 +3,21 @@ include("node.jl")
 struct Element
     id::Int64
     nodes::Vector{Node}
-    area::Float64
     young::Float64
+    area::Float64
 end
 
 function len(el::Element)::Float64
     return distance(el.nodes[1], el.nodes[2])
 end
+
+num_dofs(el::Element) = sum(num_dofs.(el.nodes))
+
+supports(el::Element) = vcat([node.supports for node in el.nodes]...)
+
+free_local_dofs(el::Element)::Vector{Int64} = Vector(1:num_dofs(el))[.!(supports(el))] 
+
+free_dofs(el::Element) = dofs(el)[.!(supports(el))]
 
 volume(el::Element) = el.area * len(el)
 
